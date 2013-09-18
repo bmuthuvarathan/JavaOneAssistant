@@ -62,4 +62,11 @@ public class ToDoItem implements Serializable {
 	public void setCompleted(boolean completed) {
 		this.completed = completed;
 	}
+
+	@Override
+	public String toString() {
+		return "ToDoItem [id=" + id + ", username=" + username + ", title="
+				+ title + ", description=" + description + ", completed="
+				+ completed + "]";
+	}
 }

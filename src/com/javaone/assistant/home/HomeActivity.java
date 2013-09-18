@@ -1,18 +1,14 @@
 package com.javaone.assistant.home;
 
-import com.javaone.assistant.R;
-import com.javaone.assistant.login.LoginActivity;
-import com.javaone.assistant.login.LoginAsyncTask;
-import com.javaone.assistant.model.JavaOneAppContext;
-import com.javaone.assistant.todo.ListToDosAsyncTask;
-
-import android.os.Bundle;
 import android.app.Activity;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
+
+import com.javaone.assistant.R;
+import com.javaone.assistant.todo.ListToDosAsyncTask;
 
 public class HomeActivity extends Activity {
 	

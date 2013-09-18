@@ -68,8 +68,8 @@ public class ListToDosAsyncTask extends AsyncTask<Void, Void, List<ToDoItem>> {
 	protected void onPostExecute(List<ToDoItem> todos) {
 		Log.d(LOG_TAG, "In onPostExecute: ");
 		super.onPostExecute(todos);
-		ToDoListActivity.setToDoItems(todos); 
-		Intent intent = new Intent(activityContext, ToDoListActivity.class);
+		ListToDoActivity.setToDoItems(todos); 
+		Intent intent = new Intent(activityContext, ListToDoActivity.class);
 		activityContext.startActivity(intent); 
 	}
 
