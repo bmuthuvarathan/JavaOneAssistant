@@ -6,5 +6,10 @@
     <string name="username">Username:</string>
     <string name="password">Password:</string>
     <string name="submit">Submit</string>
+    <string name="title_activity_home">Home</string>
+    <string name="todos">Session ToDos</string>
+    <string name="chatter">JavaOne Chatter</string>
+    <string name="title_activity_to_do_list">ToDoListActivity</string>
+    <string name="todolist">ToDo Items</string>
 
 </resources>
