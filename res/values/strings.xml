@@ -12,13 +12,13 @@
     <string name="title_activity_to_do_list">ToDo List</string>
     <string name="todolist">ToDo Items</string>
     <string name="todoAdd">Add ToDo</string>
+    <string name="todoDelete">Delete ToDo</string>
     <string name="title">Title</string>
     <string name="description">Description</string>
     <string name="add">Add</string>
     <string name="update">Update</string>
     <string name="delete">Delete</string>
     <string name="title_activity_add_todo">Add Todo Activity</string>
-    <string name="hello_world">Hello world!</string>
     <string name="title_activity_update_todo">Update Todo</string>
     <string name="todo_completed">Completed</string>
 

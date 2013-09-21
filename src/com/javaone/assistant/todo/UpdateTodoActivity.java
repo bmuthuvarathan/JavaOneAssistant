@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -14,7 +15,7 @@ import com.javaone.assistant.model.ToDoItem;
 
 public class UpdateTodoActivity extends Activity {
 	
-	public static ToDoItem itemToUpdate = null;
+	private  ToDoItem todoItem = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -28,19 +29,21 @@ public class UpdateTodoActivity extends Activity {
 
 	private void initialize() {
 		Intent i = getIntent();
-		ToDoItem item = (ToDoItem) i.getSerializableExtra("item");
+		todoItem = (ToDoItem) i.getSerializableExtra("item");
 		
 		EditText editText = (EditText) findViewById(R.id.title);
-		editText.setText(item.getTitle());
+		editText.setText(todoItem.getTitle());
 		
 		editText = (EditText) findViewById(R.id.description);
-		editText.setText(item.getDescription());
+		editText.setText(todoItem.getDescription());
 		
-		Switch todoCompletedSwith = (Switch) findViewById(R.id.completed_switch);
-		todoCompletedSwith.setChecked(item.isCompleted());
+		Switch todoCompletedSwitch = (Switch) findViewById(R.id.completed_switch);
+		todoCompletedSwitch.setChecked(todoItem.isCompleted());
 		
-		Button submitButton = (Button) findViewById(R.id.update);
-		submitButton.setTag(item);
+		//this works too, but since a instance item is needed for 
+		//onOptionsItemSelected, this is not needed anymore
+		//Button submitButton = (Button) findViewById(R.id.update);
+		//submitButton.setTag(item); 
 	}
 
 	@Override
@@ -56,17 +59,27 @@ public class UpdateTodoActivity extends Activity {
 		submitButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 
-				ToDoItem item = (ToDoItem) v.getTag();
 				EditText editText = (EditText) findViewById(R.id.title);
-				item.setTitle(editText.getText().toString());
+				todoItem.setTitle(editText.getText().toString());
 				editText = (EditText) findViewById(R.id.description);
-				item.setDescription(editText.getText().toString());
+				todoItem.setDescription(editText.getText().toString());
 				Switch todoCompletedSwith = (Switch) findViewById(R.id.completed_switch);
-				item.setCompleted(todoCompletedSwith.isChecked());
+				todoItem.setCompleted(todoCompletedSwith.isChecked());
 
-				new UpdateToDoAsyncTask(UpdateTodoActivity.this, item).execute();
+				new UpdateToDoAsyncTask(UpdateTodoActivity.this, todoItem).execute();
 			}
 		});
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case R.id.todoDelete:
+			new DeleteToDoAsncTask(UpdateTodoActivity.this, todoItem.getId()).execute();
+			return true;
+		default:
+			return true;
+		}
 	}
 
 }
