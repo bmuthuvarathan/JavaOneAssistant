@@ -19,7 +19,7 @@ public class ToDoItem implements Serializable {
     /**
      * Default constructor
      */
-    protected ToDoItem() {
+    public ToDoItem() {
         // Default constructor
     }
 

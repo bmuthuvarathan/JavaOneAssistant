@@ -1,63 +1,55 @@
 package com.javaone.assistant.todo;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
 import org.springframework.http.HttpAuthentication;
 import org.springframework.http.HttpBasicAuthentication;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.http.converter.json.MappingJacksonHttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
 import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Log;
 
 import com.javaone.assistant.model.JavaOneAppContext;
 import com.javaone.assistant.model.ToDoItem;
 
-public class ListToDosAsyncTask extends AsyncTask<Void, Void, List<ToDoItem>> {
+public class UpdateToDoAsyncTask extends AsyncTask<Void, Void, Void> {
 	
-	private Context activityContext = null;
+	private Activity activityContext = null;
+	private ToDoItem todoItem = null;
 	
-	private static final String LOG_TAG = ListToDosAsyncTask.class.getName();
+	private static final String LOG_TAG = UpdateToDoAsyncTask.class.getName();
 	
-	public ListToDosAsyncTask(Activity context) {
+	public UpdateToDoAsyncTask(UpdateTodoActivity context, ToDoItem item) {
 		activityContext = context;
+		todoItem = item;
 	}
 
 	@Override
-	protected List<ToDoItem> doInBackground(Void... params) {
+	protected Void doInBackground(Void... params) {
 		
 		JavaOneAppContext context = JavaOneAppContext.getInstance();
 
 		try {
-			// Call Spring Rest
-
 			HttpAuthentication authHeader = new HttpBasicAuthentication(context.getUsername(), context.getPassword());
-			HttpHeaders requestHeaders = new HttpHeaders();
+			HttpHeaders requestHeaders = new HttpHeaders();	
 			requestHeaders.setAuthorization(authHeader);
-			requestHeaders.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
 
 			// Create a new RestTemplate instance
 			RestTemplate restTemplate = new RestTemplate();
 			restTemplate.getMessageConverters().add(new MappingJacksonHttpMessageConverter());
 
-			String url = context.getBaseUrl();
+			String url = context.getBaseUrl() + "/" + todoItem.getId();
+			
+			Log.d(LOG_TAG, "Updating ID: " + todoItem.getId());
+			
+			restTemplate.exchange(url, HttpMethod.PUT, 
+					new HttpEntity<ToDoItem>(todoItem, requestHeaders), Void.class);
 
-			// Make the network request
-			ResponseEntity<ToDoItem[]> response = restTemplate.exchange(url,HttpMethod.GET, new HttpEntity<Object>(requestHeaders), ToDoItem[].class);
-			ToDoItem[] todos = response.getBody();
-			Log.d(LOG_TAG, "Received: " + todos.length);
-			return Arrays.asList(todos);
+			return null;
 		} catch (Exception e) {
 			//TODO Need error handling
 			Log.e(LOG_TAG, e.getLocalizedMessage(), e);
@@ -66,12 +58,12 @@ public class ListToDosAsyncTask extends AsyncTask<Void, Void, List<ToDoItem>> {
 	}
 
 	@Override
-	protected void onPostExecute(List<ToDoItem> todos) {
+	protected void onPostExecute(Void result) {
 		Log.d(LOG_TAG, "In onPostExecute: ");
-		super.onPostExecute(todos);
-		ListToDoActivity.setToDoItems(todos); 
-		Intent intent = new Intent(activityContext, ListToDoActivity.class);
-		activityContext.startActivity(intent); 
+		super.onPostExecute(result);
+		new ListToDosAsyncTask(activityContext).execute();
 	}
+	
+	
 
 }

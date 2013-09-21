@@ -1,8 +1,6 @@
 package com.javaone.assistant.todo;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import android.app.ListActivity;
 import android.content.Intent;
@@ -14,24 +12,18 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.javaone.assistant.R;
-import com.javaone.assistant.home.HomeActivity;
 import com.javaone.assistant.model.ToDoItem;
 
 public class ListToDoActivity extends ListActivity {
 	
 	private static String[] itemTitles = new String[]{};
-	private static Map<String, ToDoItem> itemsMap;
+	private static ToDoItem[] items;
 
 @Override
 public void onCreate(Bundle savedInstanceState) {
 	super.onCreate(savedInstanceState);
-	
-	//no more this
-    //setContentView(R.layout.activity_to_do_list);
 
 	setListAdapter(new ArrayAdapter<String>(this, R.layout.activity_to_do_list, itemTitles));
 
@@ -42,8 +34,11 @@ public void onCreate(Bundle savedInstanceState) {
 		public void onItemClick(AdapterView<?> parent, View view,
 				int position, long id) {
 		    // When clicked, show a toast with the TextView text
-		    Toast.makeText(getApplicationContext(),
-			((TextView) view).getText(), Toast.LENGTH_SHORT).show();
+		    //Toast.makeText(getApplicationContext(),
+			//((TextView) view).getText(), Toast.LENGTH_SHORT).show();
+			Intent intent = new Intent(ListToDoActivity.this, UpdateTodoActivity.class);
+			intent.putExtra("item", items[position]);
+			startActivity(intent); 
 		}
 	});
 
@@ -60,7 +55,7 @@ public void onCreate(Bundle savedInstanceState) {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.todoAdd:
-			Intent intent = new Intent(ListToDoActivity.this, HomeActivity.class);
+			Intent intent = new Intent(ListToDoActivity.this, AddTodoActivity.class);
 			startActivity(intent); 
 			return true;
 		default:
@@ -68,17 +63,17 @@ public void onCreate(Bundle savedInstanceState) {
 		}
 	}
 	
-	public static void setToDoItems(List<ToDoItem> items) {
-		if(items == null)
+	public static void setToDoItems(List<ToDoItem> itemsList) {
+		if(itemsList == null)
 			return;
 		
-		itemTitles = new String[items.size()];
-		itemsMap = new HashMap<String, ToDoItem>();
+		itemTitles = new String[itemsList.size()];
+		items = new ToDoItem[itemsList.size()];
 		
 		int i = 0;
-		for(ToDoItem item: items) {
-			itemTitles[i++] = item.getTitle();
-			itemsMap.put(item.getTitle(), item);
+		for(ToDoItem item: itemsList) {
+			itemTitles[i] = item.getTitle();
+			items[i++] = item;
 		} 
 	}
 

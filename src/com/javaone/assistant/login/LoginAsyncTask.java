@@ -39,16 +39,14 @@ public class LoginAsyncTask extends AsyncTask<Void, Void, List<ToDoItem>> {
 		JavaOneAppContext context = JavaOneAppContext.getInstance();
 
 		try {
-			// Call Spring Rest
-
 			HttpAuthentication authHeader = new HttpBasicAuthentication(context.getUsername(), context.getPassword());
 			HttpHeaders requestHeaders = new HttpHeaders();
 			requestHeaders.setAuthorization(authHeader);
 			requestHeaders.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
-
-			// Create a new RestTemplate instance
+			
 			RestTemplate restTemplate = new RestTemplate();
 			restTemplate.getMessageConverters().add(new MappingJacksonHttpMessageConverter());
+			//restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
 
 			String url = context.getBaseUrl();
 
