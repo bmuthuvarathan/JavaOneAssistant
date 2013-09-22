@@ -1,4 +1,4 @@
-package com.javaone.assistant.model;
+package com.javaone.assistant;
 
 /**
  * Single class to hold username and password, so

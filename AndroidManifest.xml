@@ -40,6 +40,10 @@
             android:name="com.javaone.assistant.todo.UpdateTodoActivity"
             android:label="@string/title_activity_update_todo" >
         </activity>
+        <activity
+            android:name="com.javaone.assistant.chatter.ChatActivity"
+            android:label="@string/title_activity_chat" >
+        </activity>
     </application>
 
 </manifest>

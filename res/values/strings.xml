@@ -6,7 +6,7 @@
     <string name="username">Username:</string>
     <string name="password">Password:</string>
     <string name="submit">Submit</string>
-    <string name="title_activity_home">Home</string>
+    <string name="title_activity_home">JavaOne Assistant</string>
     <string name="todos">Session ToDos</string>
     <string name="chatter">JavaOne Chatter</string>
     <string name="title_activity_to_do_list">ToDo List</string>
@@ -21,5 +21,7 @@
     <string name="title_activity_add_todo">Add Todo Activity</string>
     <string name="title_activity_update_todo">Update Todo</string>
     <string name="todo_completed">Completed</string>
+    <string name="title_activity_chat">JavaOne Chatter</string>
+    <string name="quit">Quit</string>
 
 </resources>

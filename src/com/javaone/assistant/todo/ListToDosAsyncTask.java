@@ -11,7 +11,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.http.converter.json.MappingJacksonHttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
@@ -21,7 +20,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.javaone.assistant.model.JavaOneAppContext;
+import com.javaone.assistant.JavaOneAppContext;
 import com.javaone.assistant.model.ToDoItem;
 
 public class ListToDosAsyncTask extends AsyncTask<Void, Void, List<ToDoItem>> {

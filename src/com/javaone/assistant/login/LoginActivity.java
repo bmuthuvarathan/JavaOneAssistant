@@ -21,8 +21,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.javaone.assistant.JavaOneAppContext;
 import com.javaone.assistant.R;
-import com.javaone.assistant.model.JavaOneAppContext;
 
 public class LoginActivity extends Activity {
 	
@@ -63,7 +63,7 @@ public class LoginActivity extends Activity {
 				editText = (EditText) findViewById(R.id.password);
 				context.setPassword(editText.getText().toString());
 
-				context.setBaseUrl(getString(R.string.base_uri) + "/" + context.getUsername());
+				context.setBaseUrl(getString(R.string.todo_url) + "/" + context.getUsername());
 			}
 		});
 	}

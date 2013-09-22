@@ -5,7 +5,6 @@ import org.springframework.http.HttpBasicAuthentication;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.http.converter.json.MappingJacksonHttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
@@ -13,7 +12,7 @@ import android.app.Activity;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.javaone.assistant.model.JavaOneAppContext;
+import com.javaone.assistant.JavaOneAppContext;
 import com.javaone.assistant.model.ToDoItem;
 
 public class UpdateToDoAsyncTask extends AsyncTask<Void, Void, Void> {

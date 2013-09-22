@@ -19,9 +19,13 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.javaone.assistant.JavaOneAppContext;
 import com.javaone.assistant.home.HomeActivity;
-import com.javaone.assistant.model.JavaOneAppContext;
 import com.javaone.assistant.model.ToDoItem;
+
+import de.tavendo.autobahn.WebSocketConnection;
+import de.tavendo.autobahn.WebSocketException;
+import de.tavendo.autobahn.WebSocketHandler;
 
 public class LoginAsyncTask extends AsyncTask<Void, Void, List<ToDoItem>> {
 	
@@ -64,10 +68,39 @@ public class LoginAsyncTask extends AsyncTask<Void, Void, List<ToDoItem>> {
 
 	@Override
 	protected void onPostExecute(List<ToDoItem> result) {
-		Log.d(LOG_TAG, "In onPostExecute: ");
+		Log.d(LOG_TAG, "In LoginAsyncTask onPostExecute: ");
 		super.onPostExecute(result);
 		Intent intent = new Intent(activityContext, HomeActivity.class);
 		activityContext.startActivity(intent); 
 	}
 
+	private final WebSocketConnection mConnection = new WebSocketConnection();
+	
+	private void doAutobahnWSS() {
+		final String wsuri = "ws://10.0.2.2:8080/javaee-mobile-server/chat";
+		 
+		   try {
+		      mConnection.connect(wsuri, new WebSocketHandler() {
+		 
+		         @Override
+		         public void onOpen() {
+		            Log.d(LOG_TAG, "Status: Connected to " + wsuri);
+		            mConnection.sendTextMessage("  {\"user\": \"the name of the user\", \"message\": \"the chat message\"}");
+		         }
+		 
+		         @Override
+		         public void onTextMessage(String payload) {
+		            Log.d(LOG_TAG, "Got echo: " + payload);
+		         }
+		 
+		         @Override
+		         public void onClose(int code, String reason) {
+		            Log.d(LOG_TAG, "Connection lost.");
+		         }
+		      });
+		   } catch (WebSocketException e) {
+		 
+		      Log.d(LOG_TAG, e.toString());
+		   }
+	}
 }

@@ -12,7 +12,7 @@ import android.app.Activity;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.javaone.assistant.model.JavaOneAppContext;
+import com.javaone.assistant.JavaOneAppContext;
 
 public class DeleteToDoAsncTask extends AsyncTask<Void, Void, Void> {
 	private Activity activityContext = null;
