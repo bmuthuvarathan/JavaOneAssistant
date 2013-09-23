@@ -1,18 +1,11 @@
 package com.javaone.assistant.todo;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
-import org.springframework.http.HttpAuthentication;
-import org.springframework.http.HttpBasicAuthentication;
 import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.json.MappingJacksonHttpMessageConverter;
-import org.springframework.web.client.RestTemplate;
 
 import android.app.Activity;
 import android.content.Context;
@@ -39,21 +32,11 @@ public class ListToDosAsyncTask extends AsyncTask<Void, Void, List<ToDoItem>> {
 		JavaOneAppContext context = JavaOneAppContext.getInstance();
 
 		try {
-			// Call Spring Rest
-
-			HttpAuthentication authHeader = new HttpBasicAuthentication(context.getUsername(), context.getPassword());
-			HttpHeaders requestHeaders = new HttpHeaders();
-			requestHeaders.setAuthorization(authHeader);
-			requestHeaders.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
-
-			// Create a new RestTemplate instance
-			RestTemplate restTemplate = new RestTemplate();
-			restTemplate.getMessageConverters().add(new MappingJacksonHttpMessageConverter());
-
-			String url = context.getBaseUrl();
+			//requestHeaders.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
 
 			// Make the network request
-			ResponseEntity<ToDoItem[]> response = restTemplate.exchange(url,HttpMethod.GET, new HttpEntity<Object>(requestHeaders), ToDoItem[].class);
+			ResponseEntity<ToDoItem[]> response = context.getDefaultRestTemplate().exchange(context.getBaseUrl(),
+					HttpMethod.GET, new HttpEntity<Object>(context.getDefaultHeaders()), ToDoItem[].class);
 			ToDoItem[] todos = response.getBody();
 			Log.d(LOG_TAG, "Received: " + todos.length);
 			return Arrays.asList(todos);

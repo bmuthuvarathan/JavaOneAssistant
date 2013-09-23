@@ -1,13 +1,9 @@
 package com.javaone.assistant.todo;
 
-import org.springframework.http.HttpAuthentication;
-import org.springframework.http.HttpBasicAuthentication;
 import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.StringHttpMessageConverter;
-import org.springframework.http.converter.json.MappingJacksonHttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
 import android.app.Activity;
@@ -35,20 +31,12 @@ public class AddToDoAsyncTask extends AsyncTask<Void, Void, Void> {
 		JavaOneAppContext context = JavaOneAppContext.getInstance();
 
 		try {
-			HttpAuthentication authHeader = new HttpBasicAuthentication(context.getUsername(), context.getPassword());
-			HttpHeaders requestHeaders = new HttpHeaders();	
-
-			requestHeaders.setAuthorization(authHeader);
-
 			// Create a new RestTemplate instance
-			RestTemplate restTemplate = new RestTemplate();
-			restTemplate.getMessageConverters().add(new MappingJacksonHttpMessageConverter());
+			RestTemplate restTemplate = context.getDefaultRestTemplate();
 			restTemplate.getMessageConverters().add(new StringHttpMessageConverter());
-
-			String url = context.getBaseUrl();
 			
-			ResponseEntity<String> responseEntity = restTemplate.exchange(url, HttpMethod.POST, 
-					new HttpEntity<ToDoItem>(todoItem, requestHeaders), String.class);
+			ResponseEntity<String> responseEntity = restTemplate.exchange(context.getBaseUrl(), HttpMethod.POST, 
+					new HttpEntity<ToDoItem>(todoItem, context.getDefaultHeaders()), String.class);
 			
 			String id = responseEntity.getBody();
 			

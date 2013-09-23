@@ -33,66 +33,43 @@ public class ChatActivity extends Activity {
 		toast.show();
 	}
 
-	private void setButtonConnect() {
-		mOpenClose.setText("Connect");
-		mOpenClose.setOnClickListener(new Button.OnClickListener() {
-			public void onClick(View v) {
-				start();
-			}
-		});
-	}
-
-	private void setButtonDisconnect() {
-		mOpenClose.setText("Disconnect");
-		mOpenClose.setOnClickListener(new Button.OnClickListener() {
-			public void onClick(View v) {
-				mConnection.disconnect();
-			}
-		});
-	}
-
 	private final WebSocketConnection mConnection = new WebSocketConnection();
 
 	private void start() {
 
 		final String wsuri = getString(R.string.chat_url);
-		final String message = "{\"user\": \"" + JavaOneAppContext.getInstance().getUsername() +
-				", \"message\": \"";
+		final String message = "{\"user\": \""
+				+ JavaOneAppContext.getInstance().getUsername()
+				+ "\", \"message\": \"";
 		Log.d(TAG, "Status: Connecting to " + wsuri + " ..");
-
-		setButtonDisconnect();
 
 		try {
 			mConnection.connect(wsuri, new WebSocketHandler() {
 				@Override
 				public void onOpen() {
 					Log.d(TAG, "Connected to " + wsuri + " ..");
-					mSendMessage.setEnabled(true);
-					mMessage.setEnabled(true);
-					mSendMessage.setOnClickListener(new Button.OnClickListener() {
-						public void onClick(View v) {
-							
-							String fullMessage = message + mMessage.getText().toString() + "\"}";
-							Log.d(TAG, "Sending message: " + fullMessage);
-							mConnection.sendTextMessage("  {\"user\": \"the TRTRTR\", \"message\": \"the chat message\"}");
-					        Log.d(TAG, "!!!!!!!!!!!Done Sending");
-							//mConnection.sendTextMessage(fullMessage);
-						}
-					});
+					mSendMessage
+							.setOnClickListener(new Button.OnClickListener() {
+								public void onClick(View v) {
+									String fullMessage = message
+											+ mMessage.getText().toString()
+											+ "\"}";
+									Log.d(TAG, "Sending message: "
+											+ fullMessage);
+									mConnection.sendTextMessage(fullMessage);
+								}
+							});
 				}
 
 				@Override
 				public void onTextMessage(String payload) {
-					Log.d(TAG, "YHOOOO: " + payload);
-					alert("Got echo: " + payload);
+					Log.d(TAG, "Got back: " + payload);
+					alert(payload);
 				}
 
 				@Override
 				public void onClose(int code, String reason) {
-					alert("Connection lost.");
-					setButtonConnect();
-					mSendMessage.setEnabled(false);
-					mMessage.setEnabled(false);
+					Log.d(TAG, "Connection closed or lost");
 				}
 			});
 		} catch (WebSocketException e) {
@@ -103,17 +80,11 @@ public class ChatActivity extends Activity {
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_chat);
-
-		mOpenClose = (Button) findViewById(R.id.connectDisconnect);
 		mMessage = (EditText) findViewById(R.id.message);
 		mSendMessage = (Button) findViewById(R.id.sendMessage);
-
-		setButtonConnect();
-		mSendMessage.setEnabled(false);
-		mMessage.setEnabled(false);
+		start();
 	}
 
 	@Override
