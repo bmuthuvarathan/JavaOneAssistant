@@ -23,5 +23,8 @@
     <string name="todo_completed">Completed</string>
     <string name="title_activity_chat">JavaOne Chatter</string>
     <string name="quit">Quit</string>
+    <string name="title_activity_chat2">JavaOne Chatter</string>
+    <string name="send">Send</string>
+    <string name="msgHint">Type messag here</string>
 
 </resources>

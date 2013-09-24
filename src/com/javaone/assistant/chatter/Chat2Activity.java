@@ -1,18 +1,17 @@
 package com.javaone.assistant.chatter;
 
+import java.util.ArrayList;
+
 import org.codehaus.jackson.map.ObjectMapper;
 
-import android.app.Activity;
+import android.app.ListActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnKeyListener;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.javaone.assistant.JavaOneAppContext;
 import com.javaone.assistant.R;
@@ -22,27 +21,40 @@ import de.tavendo.autobahn.WebSocketConnection;
 import de.tavendo.autobahn.WebSocketException;
 import de.tavendo.autobahn.WebSocketHandler;
 
-public class ChatActivity extends Activity {
+public class Chat2Activity extends ListActivity {
+	/** Called when the activity is first created. */
 
-	static final String TAG = ChatActivity.class.getName();
-
-	static EditText mMessage;
+	static final String TAG = Chat2Activity.class.getName();
+	
+	ArrayList<ChatMessage> messages = new ArrayList<ChatMessage>();
+	Chat2MessageAdapter adapter;
+	EditText text;
+	ObjectMapper mapper = new ObjectMapper();
 	private final WebSocketConnection mConnection = new WebSocketConnection();
-	private final ObjectMapper objectM = new ObjectMapper();
 
-	private void alert(String message) {
-		Toast toast = Toast.makeText(getApplicationContext(), message,
-				Toast.LENGTH_SHORT);
-		toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 0);
-		toast.show();
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_chat2);
+
+		text = (EditText) this.findViewById(R.id.text);
+
+		adapter = new Chat2MessageAdapter(this, messages);
+		setListAdapter(adapter);
+		start();
 	}
 
-
-
+	public void sendMessage() {
+		String newMessage = text.getText().toString().trim();
+		if (newMessage.length() > 0) {
+			text.setText("");
+			addNewMessage(new ChatMessage(JavaOneAppContext.getInstance().getUsername(), newMessage));
+		}
+	}
+	
 	private void start() {
 
 		final String wsuri = getString(R.string.chat_url);
-		final ChatMessage message = new ChatMessage(JavaOneAppContext.getInstance().getUsername());
 		
 		Log.d(TAG, "Status: Connecting to " + wsuri + " ..");
 
@@ -52,15 +64,17 @@ public class ChatActivity extends Activity {
 				public void onOpen() {
 					Log.d(TAG, "Connected to " + wsuri + " ..");
 
-					mMessage.setOnKeyListener(new OnKeyListener() {
+					text.setOnKeyListener(new OnKeyListener() {
 						public boolean onKey(View v, int keyCode, KeyEvent event) {
 							if (event.getAction() == KeyEvent.ACTION_DOWN) {
 								switch (keyCode) {
 								case KeyEvent.KEYCODE_DPAD_CENTER:
 								case KeyEvent.KEYCODE_ENTER:
-									message.setMessage(mMessage.getText().toString());
+									ChatMessage message = new ChatMessage(JavaOneAppContext.getInstance().getUsername(), 
+											text.getText().toString());
+									Chat2Activity.this.addNewMessage(message);
 									try {
-										String jsonMessage = objectM.writeValueAsString(message);
+										String jsonMessage = mapper.writeValueAsString(message);
 										Log.d(TAG, "Sending message: " + jsonMessage);
 										mConnection.sendTextMessage(jsonMessage);
 									} catch(Exception ex) {
@@ -81,20 +95,12 @@ public class ChatActivity extends Activity {
 				public void onTextMessage(String payload) {
 					Log.d(TAG, "Got back: " + payload);
 					try {
-						ChatMessage message = objectM.readValue(payload, ChatMessage.class);
-						alert(message.getUser());
+						ChatMessage message = mapper.readValue(payload, ChatMessage.class);
+						addNewMessage(message);
 					} catch (Exception ex) {
 						//TODO Handle error
 						Log.d(TAG, "Json Parsing Exception: " + ex);
-						alert(payload);
 					}
-					
-					
-//					LayoutParams lparams = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-//					TextView tv=new TextView(ChatActivity.this);
-//					tv.setText("test");
-//					tv.setLayoutParams(lparams);
-//					ChatActivity.scrollView.addView(tv);
 				}
 
 				@Override
@@ -108,38 +114,25 @@ public class ChatActivity extends Activity {
 		}
 	}
 
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_chat);
-		mMessage = (EditText) findViewById(R.id.message);
-		//scrollView = (ScrollView) findViewById(R.id.scrollView);
-		start();
+
+	void addNewMessage(ChatMessage m) {
+		messages.add(m);
+		adapter.notifyDataSetChanged();
+		getListView().setSelection(messages.size() - 1);
 	}
 
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater().inflate(R.menu.chat2, menu);
+		return true;
+	}
+	
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
 		if (mConnection.isConnected()) {
 			mConnection.disconnect();
 		}
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.menu.chat, menu);
-		return true;
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case R.id.quit:
-			finish();
-			break;
-		default:
-			return super.onOptionsItemSelected(item);
-		}
-		return true;
 	}
 }

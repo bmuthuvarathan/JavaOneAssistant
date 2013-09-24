@@ -9,7 +9,7 @@ import android.view.View;
 import android.widget.Button;
 
 import com.javaone.assistant.R;
-import com.javaone.assistant.chatter.ChatActivity;
+import com.javaone.assistant.chatter.Chat2Activity;
 import com.javaone.assistant.todo.ListToDosAsyncTask;
 
 public class HomeActivity extends Activity {
@@ -41,13 +41,13 @@ public class HomeActivity extends Activity {
 				Log.d(LOG_TAG, "Background task in excution");
 			}
 		});
-
+		
 		// chat
-		Button chatButton = (Button) findViewById(R.id.chat);
-		chatButton.setOnClickListener(new View.OnClickListener() {
+		Button chat2Button = (Button) findViewById(R.id.chat);
+		chat2Button.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				Log.d(LOG_TAG, "Invoking Chat Activity");
-				Intent intent = new Intent(HomeActivity.this, ChatActivity.class);
+				Log.d(LOG_TAG, "Invoking Chat2 Activity");
+				Intent intent = new Intent(HomeActivity.this, Chat2Activity.class);
 				startActivity(intent);
 			}
 		});
