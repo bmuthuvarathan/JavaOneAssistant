@@ -61,13 +61,13 @@ public class Chat2MessageAdapter extends BaseAdapter {
 			// Check whether message is mine to show green background and alignt right
 			if (message.getTimestamp() == null) {
 				holder.message.setText("You: " + message.getMessage());
-				holder.message.setBackgroundColor(0x9FB3D1);
+				holder.message.setTextColor(0xFF9FB3D1);
 				lp.gravity = Gravity.RIGHT;
 			}
 			// If not mine, then it is from sender and align to left
 			else {
 				holder.message.setText(message.getUser() + ": " + message.getMessage());
-				holder.message.setBackgroundColor(0xA1E177);
+				holder.message.setTextColor(0xFFA1E177);
 				lp.gravity = Gravity.LEFT;
 			}
 			holder.message.setLayoutParams(lp);

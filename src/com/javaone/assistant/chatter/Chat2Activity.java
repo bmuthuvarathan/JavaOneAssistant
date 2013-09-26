@@ -31,6 +31,7 @@ public class Chat2Activity extends ListActivity {
 	EditText text;
 	ObjectMapper mapper = new ObjectMapper();
 	private final WebSocketConnection mConnection = new WebSocketConnection();
+	private ChatMessage lastMessage = null;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -42,14 +43,6 @@ public class Chat2Activity extends ListActivity {
 		adapter = new Chat2MessageAdapter(this, messages);
 		setListAdapter(adapter);
 		start();
-	}
-
-	public void sendMessage() {
-		String newMessage = text.getText().toString().trim();
-		if (newMessage.length() > 0) {
-			text.setText("");
-			addNewMessage(new ChatMessage(JavaOneAppContext.getInstance().getUsername(), newMessage));
-		}
 	}
 	
 	private void start() {
@@ -70,13 +63,15 @@ public class Chat2Activity extends ListActivity {
 								switch (keyCode) {
 								case KeyEvent.KEYCODE_DPAD_CENTER:
 								case KeyEvent.KEYCODE_ENTER:
-									ChatMessage message = new ChatMessage(JavaOneAppContext.getInstance().getUsername(), 
+									lastMessage = new ChatMessage(JavaOneAppContext.getInstance().getUsername(), 
 											text.getText().toString());
-									Chat2Activity.this.addNewMessage(message);
+									
+									Chat2Activity.this.addNewMessage();
 									try {
-										String jsonMessage = mapper.writeValueAsString(message);
+										String jsonMessage = mapper.writeValueAsString(lastMessage);
 										Log.d(TAG, "Sending message: " + jsonMessage);
 										mConnection.sendTextMessage(jsonMessage);
+										text.setText("");
 									} catch(Exception ex) {
 										Log.d(TAG, "Parsing to Json string failed: " + ex.getMessage());
 									}
@@ -95,8 +90,8 @@ public class Chat2Activity extends ListActivity {
 				public void onTextMessage(String payload) {
 					Log.d(TAG, "Got back: " + payload);
 					try {
-						ChatMessage message = mapper.readValue(payload, ChatMessage.class);
-						addNewMessage(message);
+						 lastMessage = mapper.readValue(payload, ChatMessage.class);
+						 addNewMessage();
 					} catch (Exception ex) {
 						//TODO Handle error
 						Log.d(TAG, "Json Parsing Exception: " + ex);
@@ -115,10 +110,15 @@ public class Chat2Activity extends ListActivity {
 	}
 
 
-	void addNewMessage(ChatMessage m) {
-		messages.add(m);
-		adapter.notifyDataSetChanged();
-		getListView().setSelection(messages.size() - 1);
+	void addNewMessage() {
+		runOnUiThread(new Runnable()  {
+			public void run() {
+				messages.add(Chat2Activity.this.lastMessage);
+				adapter.notifyDataSetChanged();
+				getListView().setSelection(messages.size() - 1);
+			}
+		});
+		
 	}
 
 	@Override
@@ -135,4 +135,6 @@ public class Chat2Activity extends ListActivity {
 			mConnection.disconnect();
 		}
 	}
+
+	
 }
