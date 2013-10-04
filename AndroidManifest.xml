@@ -41,10 +41,6 @@
             android:label="@string/title_activity_update_todo" >
         </activity>
         <activity
-            android:name="com.javaone.assistant.chatter.ChatActivity"
-            android:label="@string/title_activity_chat" >
-        </activity>
-        <activity
             android:name="com.javaone.assistant.chatter.Chat2Activity"
             android:label="@string/title_activity_chat2" >
         </activity>

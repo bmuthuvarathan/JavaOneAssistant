@@ -73,7 +73,14 @@ public class JavaOneAppContext {
 	public RestTemplate getDefaultRestTemplate() {
 		RestTemplate restTemplate = new RestTemplate();
 		restTemplate.getMessageConverters().add(new MappingJacksonHttpMessageConverter());
-		restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
+		/*There is a bug with Spring/HTTP Client and sometimes it causes 
+		 * EOFException when POSTing. But adding the following line, setting new HTTP
+		 * client request factory solves that problem. But when SSL with self-signed 
+		 * will not work if this is set. So uncomment  the following line if SSL is not
+		 * used. Since SSL is being used for ToDo resource, I had comment this out for now
+		 * TODO: Research more and solves this or stop using Spring RestTemplate
+		 */
+		//restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
 		return restTemplate;
 	}
 

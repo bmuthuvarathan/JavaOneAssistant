@@ -21,7 +21,6 @@
     <string name="title_activity_add_todo">Add Todo Activity</string>
     <string name="title_activity_update_todo">Update Todo</string>
     <string name="todo_completed">Completed</string>
-    <string name="title_activity_chat">JavaOne Chatter</string>
     <string name="quit">Quit</string>
     <string name="title_activity_chat2">JavaOne Chatter</string>
     <string name="send">Send</string>

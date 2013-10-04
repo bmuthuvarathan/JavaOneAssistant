@@ -10,6 +10,7 @@ import android.widget.EditText;
 
 import com.javaone.assistant.JavaOneAppContext;
 import com.javaone.assistant.R;
+import com.javaone.assistant.SslUtil;
 
 public class LoginActivity extends Activity {
 	
@@ -30,13 +31,12 @@ public class LoginActivity extends Activity {
 			public void onClick(View v) {
 
 				setApplicationContext();
-				
-//				try { 
-//					SslUtil.setSelfSignedCertSSLContext(getAssets());
-//				} catch (Exception e) {
-//					//TODO Error handling
-//					Log.e(LOG_TAG, " Error creating SSLContext: ", e);
-//				}
+				try { 
+					SslUtil.setSelfSignedCertSSLContext(getAssets());
+				} catch (Exception e) {
+					//TODO Error handling
+					Log.e(LOG_TAG, " Error creating SSLContext: ", e);
+				}
 				
 				Log.d(LOG_TAG, "Executing Login background task");
 				new LoginAsyncTask(LoginActivity.this).execute();

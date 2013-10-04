@@ -26,7 +26,7 @@ public class SslUtil {
 			throws Exception {
 		// Load self-signed cert from an InputStream
 		CertificateFactory cf = CertificateFactory.getInstance("X.509");
-		InputStream caInput = assets.open("s1as.cer");
+		InputStream caInput = assets.open("selfSigned.cer");
 		Certificate ca;
 		try {
 			ca = cf.generateCertificate(caInput);
