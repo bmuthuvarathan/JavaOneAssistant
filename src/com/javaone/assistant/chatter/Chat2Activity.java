@@ -25,13 +25,12 @@ public class Chat2Activity extends ListActivity {
 	/** Called when the activity is first created. */
 
 	static final String TAG = Chat2Activity.class.getName();
-	
-	ArrayList<ChatMessage> messages = new ArrayList<ChatMessage>();
-	Chat2MessageAdapter adapter;
-	EditText text;
-	ObjectMapper mapper = new ObjectMapper();
+
+	private ArrayList<ChatMessage> messages = new ArrayList<ChatMessage>();
+	private Chat2MessageAdapter adapter;
+	private EditText text;
+	private final ObjectMapper mapper = new ObjectMapper();
 	private final WebSocketConnection mConnection = new WebSocketConnection();
-	private ChatMessage lastMessage = null;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -44,7 +43,7 @@ public class Chat2Activity extends ListActivity {
 		setListAdapter(adapter);
 		start();
 	}
-	
+
 	private void start() {
 
 		final String wsuri = getString(R.string.chat_url);
@@ -63,12 +62,12 @@ public class Chat2Activity extends ListActivity {
 								switch (keyCode) {
 								case KeyEvent.KEYCODE_DPAD_CENTER:
 								case KeyEvent.KEYCODE_ENTER:
-									lastMessage = new ChatMessage(JavaOneAppContext.getInstance().getUsername(), 
+									ChatMessage msg = new ChatMessage(JavaOneAppContext.getInstance().getUsername(), 
 											text.getText().toString());
 									
-									Chat2Activity.this.addNewMessage();
+									Chat2Activity.this.addNewMessage(msg);
 									try {
-										String jsonMessage = mapper.writeValueAsString(lastMessage);
+										String jsonMessage = mapper.writeValueAsString(msg);
 										Log.d(TAG, "Sending message: " + jsonMessage);
 										mConnection.sendTextMessage(jsonMessage);
 										text.setText("");
@@ -90,8 +89,7 @@ public class Chat2Activity extends ListActivity {
 				public void onTextMessage(String payload) {
 					Log.d(TAG, "Got back: " + payload);
 					try {
-						 lastMessage = mapper.readValue(payload, ChatMessage.class);
-						 addNewMessage();
+						 addNewMessage(mapper.readValue(payload, ChatMessage.class));
 					} catch (Exception ex) {
 						//TODO Handle error
 						Log.d(TAG, "Json Parsing Exception: " + ex);
@@ -104,21 +102,16 @@ public class Chat2Activity extends ListActivity {
 				}
 			});
 		} catch (WebSocketException e) {
-
+			//TODO error handling
 			Log.d(TAG, e.toString());
 		}
 	}
 
+	void addNewMessage(ChatMessage msg) {
+		messages.add(msg);
+		adapter.notifyDataSetChanged();
+		getListView().setSelection(messages.size() - 1);
 
-	void addNewMessage() {
-		runOnUiThread(new Runnable()  {
-			public void run() {
-				messages.add(Chat2Activity.this.lastMessage);
-				adapter.notifyDataSetChanged();
-				getListView().setSelection(messages.size() - 1);
-			}
-		});
-		
 	}
 
 	@Override
@@ -127,7 +120,7 @@ public class Chat2Activity extends ListActivity {
 		getMenuInflater().inflate(R.menu.chat2, menu);
 		return true;
 	}
-	
+
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
@@ -136,5 +129,4 @@ public class Chat2Activity extends ListActivity {
 		}
 	}
 
-	
 }

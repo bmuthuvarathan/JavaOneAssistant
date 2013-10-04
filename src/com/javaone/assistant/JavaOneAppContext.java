@@ -3,6 +3,7 @@ package com.javaone.assistant;
 import org.springframework.http.HttpAuthentication;
 import org.springframework.http.HttpBasicAuthentication;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.http.converter.json.MappingJacksonHttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
@@ -72,7 +73,7 @@ public class JavaOneAppContext {
 	public RestTemplate getDefaultRestTemplate() {
 		RestTemplate restTemplate = new RestTemplate();
 		restTemplate.getMessageConverters().add(new MappingJacksonHttpMessageConverter());
-		//restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
+		restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
 		return restTemplate;
 	}
 
